@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 
@@ -60,11 +60,17 @@ class GroupViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 
-class FollowViewSet(generics.ListCreateAPIView):
-    serializer_class = FollowSerializer
+class FollowViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Follow.objects.filter(user=request.user)
+        serializer = FollowSerializer(queryset, many=True)
+        return Response(serializer.data)
 
-    def get_queryset(self):
-        return Follow.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    def create(self, request):
+        serializer = FollowSerializer(
+            data=request.data,
+            context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
