@@ -5,10 +5,6 @@ from posts.models import Comment, Post, Group
 
 
 class GroupSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(
-        read_only=True, slug_field='username'
-    )
-
     class Meta:
         fields = ("id", "title", "slug", "description")
         model = Group
