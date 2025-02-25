@@ -22,7 +22,12 @@ class Post(models.Model):
         User, on_delete=models.CASCADE, related_name='posts'
     )
     image = models.ImageField(
-        upload_to='posts/', null=True, blank=True)
+        upload_to='posts/', null=True, blank=True
+    )
+    group = models.ForeignKey(
+        Group, on_delete=models.SET_NULL,
+        related_name='posts', blank=True, null=True
+    )
 
     def __str__(self):
         return self.text
@@ -37,4 +42,5 @@ class Comment(models.Model):
     )
     text = models.TextField()
     created = models.DateTimeField(
-        'Дата добавления', auto_now_add=True, db_index=True)
+        'Дата добавления', auto_now_add=True, db_index=True
+    )
