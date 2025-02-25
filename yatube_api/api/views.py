@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, filters
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
@@ -68,6 +68,9 @@ class GroupViewSet(viewsets.ViewSet):
 
 
 class FollowViewSet(viewsets.ViewSet):
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('following',)
+
     def list(self, request):
         queryset = Follow.objects.filter(user=request.user)
         serializer = FollowSerializer(queryset, many=True)
